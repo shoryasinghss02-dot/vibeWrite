@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VibeWrite - Typing Practice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0d0d18;--pu:#a78bfa;--pu6:#7c3aed;--gr:#4ade80;--rd:#f87171;--pk:#f472b6;--am:#fbbf24;--tx:#e8e4f0;--tx2:rgba(232,228,240,.5);--tx3:rgba(232,228,240,.3);
+--glass:rgba(255,255,255,.05);--bd:rgba(255,255,255,.09);--ui:'Fredoka',system-ui,-apple-system,'Segoe UI',sans-serif;--mono:'JetBrains Mono','Fira Code',Consolas,monospace;--spring:cubic-bezier(.34,1.56,.64,1)}
+*{box-sizing:border-box;margin:0;padding:0}
+button{background:none;border:none;font:inherit;color:inherit;cursor:pointer}
+body{min-height:100vh;background:var(--bg);color:var(--tx);font-family:var(--ui);font-size:16px;overflow-x:hidden}
+:focus-visible{outline:2px solid var(--pu);outline-offset:3px}
+.blobs{position:fixed;inset:0;overflow:hidden;z-index:0;pointer-events:none}
+.blobs i{position:absolute;border-radius:50%;filter:blur(90px);opacity:.35;animation:drift 22s ease-in-out infinite alternate}
+.blobs i:nth-child(1){width:46vw;height:46vw;background:var(--pu6);top:-12vw;left:-10vw}
+.blobs i:nth-child(2){width:38vw;height:38vw;background:#16a34a;bottom:-14vw;right:-8vw;opacity:.22;animation-delay:-8s}
+.blobs i:nth-child(3){width:28vw;height:28vw;background:var(--pk);top:40%;left:55%;opacity:.14;animation-delay:-15s}
+@keyframes drift{to{transform:translate(8vw,6vh) scale(1.15)}}
+.top{position:sticky;top:12px;z-index:20;max-width:880px;margin:12px auto 0;padding:8px 10px 8px 14px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:rgba(18,16,34,.7);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid var(--bd);border-radius:99px;width:calc(100% - 24px)}
+.logo{display:flex;align-items:center;gap:9px;font-weight:700;font-size:20px;letter-spacing:-.2px;border-radius:12px}
+.logo-ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(135deg,var(--pu6),var(--gr));transition:transform .2s var(--spring),box-shadow .2s,background .3s}
+.logo:hover .logo-ic{transform:rotate(-10deg) scale(1.08)}
+.logo:active .logo-ic{transform:scale(.88)}
+.logo b{color:var(--pu);transition:color .3s}
+.logo.any .logo-ic{background:linear-gradient(135deg,var(--gr),#16a34a);box-shadow:0 0 14px rgba(74,222,128,.45)}
+.logo.any b{color:var(--gr)}
+nav{display:flex;gap:4px;margin-left:auto}
+nav a{padding:8px 14px;border-radius:99px;color:var(--tx2);text-decoration:none;font-weight:500;font-size:15px;transition:all .18s}
+nav a:hover{color:var(--tx);background:var(--glass)}
+nav a.on{color:#fff;background:linear-gradient(135deg,var(--pu6),#5b21b6);box-shadow:0 4px 14px rgba(109,40,217,.45)}
+.lvl{font-size:13px;font-weight:600;padding:6px 12px;border-radius:99px;background:rgba(74,222,128,.1);color:var(--gr);border:1px solid rgba(74,222,128,.25)}
+main{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:28px 16px 60px}
+.page{display:none}.page.on{display:block;animation:pg .35s ease}
+@keyframes pg{from{opacity:0;transform:translateY(10px)}}
+h1{font-size:clamp(30px,6vw,44px);line-height:1.1;font-weight:700;letter-spacing:-.5px;margin-bottom:6px}
+h1 em{font-style:normal;background:linear-gradient(90deg,var(--pu),var(--pk),var(--gr));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--tx2);margin-bottom:22px}
+.glass{background:var(--glass);border:1px solid var(--bd);border-radius:24px;padding:24px;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 24px 60px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.06)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:14px;font-weight:600;font-size:14px;transition:all .18s;user-select:none}
+.b2{background:rgba(255,255,255,.07);border:1px solid var(--bd)}.b2:hover{background:rgba(255,255,255,.13)}
+.b1{background:linear-gradient(135deg,var(--pu6),#5b21b6);color:#fff;box-shadow:0 4px 16px rgba(109,40,217,.4)}.b1:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(109,40,217,.55)}
+.btn:active{transform:scale(.96)}
+.row{display:flex;gap:10px;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+.lab{font-size:14px;color:var(--tx2)}.lab b{color:var(--pu)}
+.bar{height:6px;background:rgba(255,255,255,.08);border-radius:9px;overflow:hidden;margin-bottom:18px}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--pu6),var(--pk),var(--gr));border-radius:9px;transition:width .12s}
+#txt{position:relative;font-family:var(--mono);font-size:18px;line-height:1.9;padding:22px 24px;background:rgba(0,0,0,.28);border:1px solid var(--bd);border-radius:20px;min-height:150px;cursor:text;user-select:none;word-break:break-word;transition:border-color .2s,box-shadow .2s}
+#txt.f{border-color:rgba(167,139,250,.35);box-shadow:0 0 0 4px rgba(124,58,237,.14)}
+#txt.sh,.shake{animation:sh .28s}
+@keyframes sh{25%{transform:translateX(-6px)}60%{transform:translateX(5px)}}
+.c.u{color:var(--tx3)}.c.ok{color:var(--gr)}
+.c.cur{color:#fff;background:rgba(167,139,250,.28);border-radius:4px;animation:bl 1s ease-in-out infinite}
+@keyframes bl{50%{background:rgba(167,139,250,.08)}}
+.hint{position:absolute;inset:0;display:grid;place-items:center;border-radius:20px;background:rgba(13,13,24,.55);font-family:var(--ui);font-size:15px;color:var(--tx);pointer-events:none;opacity:0;transition:opacity .2s}
+.hint.v{opacity:1}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}
+.st{background:rgba(0,0,0,.22);border:1px solid var(--bd);border-radius:16px;padding:12px;text-align:center}
+.st b{display:block;font-family:var(--mono);font-size:22px;line-height:1;margin-bottom:5px}
+.st span{font-size:13px;color:var(--tx2)}
+.pf{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:18px}
+.pf .st{padding:18px 12px}.pf .st b{font-size:28px}
+.xp{grid-column:1/-1;text-align:left}.xp b{font-family:var(--ui);font-size:22px}
+.mb{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:20px;background:rgba(0,0,0,.72);backdrop-filter:blur(8px);opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s}
+.mb.show{opacity:1;visibility:visible}
+.md{width:100%;max-width:400px;text-align:center;background:#17142a;border:1px solid var(--bd);border-radius:28px;padding:34px 30px;box-shadow:0 40px 100px rgba(0,0,0,.7);transform:scale(.92) translateY(14px);transition:transform .35s var(--spring)}
+.mb.show .md{transform:none}
+.md .big{font-size:54px;display:block;animation:bob 1.6s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-6px) rotate(6deg)}}
+.md h2{font-size:26px;margin:6px 0 4px}.md p{color:var(--tx2);margin-bottom:20px}
+.mg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.mg .st b{font-size:26px}
+.md .btn{width:100%;justify-content:center;padding:12px}
+.cf{position:fixed;top:55%;left:50%;width:9px;height:13px;z-index:200;border-radius:2px;pointer-events:none;animation:cf 1.3s cubic-bezier(.2,.7,.4,1) forwards}
+@keyframes cf{to{transform:translate(var(--x),calc(var(--y) + 650px)) rotate(var(--r));opacity:0}}
+#hi{position:fixed;opacity:0;width:1px;height:1px;left:0;top:0;pointer-events:none}
+@media(max-width:620px){.top{border-radius:26px}nav{width:100%;margin:0;justify-content:space-between}nav a{flex:1;text-align:center;padding:8px 4px;font-size:14px}.lvl{margin-left:auto}.glass{padding:18px}#txt{font-size:15.5px;padding:16px}.stats{gap:6px}.st b{font-size:17px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="blobs"><i></i><i></i><i></i></div>
+<textarea id="hi" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-hidden="true" tabindex="-1"></textarea>
+
+<header class="top">
+  <button class="logo" id="logo" aria-label="VibeWrite home"><span class="logo-ic">⌨️</span><span>Vibe<b>Write</b></span></button>
+  <div class="lvl" id="lvl">Lv 1</div>
+  <nav id="nav"><a href="#practice">⌨️ Practice</a><a href="#stats">📈 Progress</a></nav>
+</header>
+
+<main>
+<!-- PRACTICE -->
+<section class="page" id="practice">
+  <h1>Let your fingers <em>flow</em></h1>
+  <p class="sub">Type the paragraph. Finish it to earn XP and level up.</p>
+  <div class="glass">
+    <div class="row">
+      <div class="lab">Paragraph <b id="pidx">1 / 10</b></div>
+      <div><button class="btn b2" id="bRe">↺ Restart</button> <button class="btn b1" id="bNx">Next</button></div>
+    </div>
+    <div class="bar"><i id="pbar"></i></div>
+    <div id="txt" tabindex="0" role="textbox" aria-label="Typing area"></div>
+    <div class="stats">
+      <div class="st"><b id="sT">0.0s</b><span>Time</span></div>
+      <div class="st"><b id="sW" style="color:var(--pu)">0</b><span>WPM</span></div>
+      <div class="st"><b id="sA" style="color:var(--gr)">-</b><span>Accuracy</span></div>
+      <div class="st"><b id="sE" style="color:var(--rd)">0</b><span>Mistakes</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROGRESS -->
+<section class="page" id="stats">
+  <h1>Your <em>progress</em></h1>
+  <p class="sub">Every finished paragraph counts. Saved in this browser.</p>
+  <div class="pf" id="pf"></div>
+  <div class="glass" id="hist" style="margin-bottom:18px"></div>
+  <button class="btn b2" id="bReset">Reset progress</button>
+</section>
+</main>
+
+<div class="mb" id="mb" role="dialog" aria-modal="true"><div class="md" id="md"></div></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const PARAS=[
+"The first cup of coffee in the morning is a ritual, not a drink. Steam rises slowly while the mind drifts from sleep. There is no better pause before the noise of the day begins.",
+"Space is not empty. Between stars drift clouds of gas and dust, the raw material of future suns. Every atom in your body was forged inside a dying star billions of years ago.",
+"Rain on a city at night is one of those sounds that somehow makes silence feel louder. Puddles hold brief reflections of streetlights before a passing car erases them forever.",
+"A good library is not about the books it contains, but the questions it makes you ask. Walk the stacks slowly. Let an unfamiliar spine stop you. Open it anywhere. Begin.",
+"Bread is one of the oldest technologies humans ever built. Yeast, flour, water, heat - four ingredients that transformed nomadic life and gave rise to the very first cities.",
+"The deep ocean is stranger than any invented world. Creatures there have evolved to survive pressure, darkness, and cold that would destroy any surface-dwelling animal instantly.",
+"To learn a language is to gain a second window onto the world. Words that do not translate remind you that experience itself can differ depending on which tongue names it.",
+"Mountains do not care that you have climbed them. That is what makes reaching the top feel real - the mountain offered nothing, and you arrived anyway with your own two feet.",
+"Photography froze time and changed how humans understand memory. Before the camera, the past existed only in fading recollection. Now a single moment can outlast any lifetime.",
+"Old maps are honest about uncertainty. Where knowledge ended, cartographers drew sea monsters, not blank space. That honesty about the unknown feels more truthful than false precision."];
+const shuf=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const rnd=a=>a[Math.random()*a.length|0];
+
+/* ---------- storage (falls back to memory if blocked) ---------- */
+const D={xp:0,best:0,done:0,acc:0,wpm:0,err:0,time:0};
+let S={...D,hist:[]};
+try{Object.assign(S,JSON.parse(localStorage.getItem('typeflow')||'{}'))}catch(e){}
+const save=()=>{try{localStorage.setItem('typeflow',JSON.stringify(S))}catch(e){}};
+const lvOf=()=>Math.floor(S.xp/100)+1;
+function addXP(n){const a=lvOf();S.xp+=Math.round(n);save();paintLvl();return lvOf()>a}
+function paintLvl(){$('lvl').textContent='Lv '+lvOf()+' · '+(S.xp%100)+'/100 XP'}
+
+/* ---------- modal + confetti ---------- */
+let modalGo=null;
+function modal(icon,title,sub,stats,btn,fn){
+  $('md').innerHTML=`<span class="big">${icon}</span><h2>${title}</h2><p>${sub}</p><div class="mg">${stats.map(s=>`<div class="st"><b style="color:${s[2]}">${s[0]}</b><span>${s[1]}</span></div>`).join('')}</div><button class="btn b1" id="mBtn">${btn}</button>`;
+  modalGo=()=>{$('mb').classList.remove('show');modalGo=null;fn&&fn()};
+  $('mBtn').onclick=modalGo;$('mb').classList.add('show');setTimeout(()=>$('mBtn').focus(),80);
+}
+function boom(n=44){const c=['#a78bfa','#4ade80','#f472b6','#fbbf24','#60a5fa'];for(let i=0;i<n;i++){const d=document.createElement('i');d.className='cf';d.style.cssText=`--x:${(Math.random()-.5)*640}px;--y:${-180-Math.random()*320}px;--r:${Math.random()*720}deg;background:${c[i%5]}`;document.body.append(d);setTimeout(()=>d.remove(),1400)}}
+
+/* ---------- router ---------- */
+let ctx=null,cur='practice',anyKey=false;
+const pages=['practice','stats'];
+function route(){
+  let h=location.hash.slice(1);if(!pages.includes(h))h='practice';cur=h;
+  pages.forEach(p=>$(p).classList.toggle('on',p===h));
+  document.querySelectorAll('nav a').forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+h));
+  if(h==='stats')paintStats();
+  ctx=h==='practice'?'practice':null;
+  if(ctx)focusIn();
+}
+window.addEventListener('hashchange',route);
+document.querySelectorAll('nav a').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();try{history.replaceState(null,'',a.getAttribute('href'))}catch(_){location.hash=a.getAttribute('href')}route()}));
+
+/* ---------- input plumbing ---------- */
+const focusIn=()=>{$('hi').focus({preventScroll:true});$('txt').classList.add('f');hint.classList.remove('v')};
+function onKey(k){
+  if(modalGo)return;
+  if(ctx==='practice')pKey(k);
+}
+function onBack(){if(ctx==='practice')pBack()}
+document.addEventListener('keydown',e=>{
+  if(modalGo){if(e.key==='Enter'||e.key===' '||e.key==='Escape'){e.preventDefault();modalGo()}return}
+  if(e.ctrlKey||e.metaKey||e.altKey||!ctx)return;
+  if(e.key==='Backspace'){e.preventDefault();onBack()}
+  else if(e.key.length===1){e.preventDefault();if(document.activeElement!==$('hi'))focusIn();onKey(e.key)}
+});
+$('hi').addEventListener('input',e=>{[...($('hi').value)].forEach(onKey);$('hi').value=''});   /* mobile keyboards */
+document.addEventListener('click',e=>{const b=e.target.closest('button');if(b&&b.id!=='mBtn')b.blur()});
+$('hi').addEventListener('blur',()=>{$('txt').classList.remove('f');if(ctx==='practice'&&!P.done)hint.classList.add('v')});
+$('logo').onclick=()=>{anyKey=!anyKey;$('logo').classList.toggle('any',anyKey);try{history.replaceState(null,'','#practice')}catch(_){}route();focusIn()};
+
+/* ---------- practice ---------- */
+const txt=$('txt');
+const hint=Object.assign(document.createElement('span'),{className:'hint v',textContent:'Click here or just start typing'});
+let P={order:shuf(PARAS),n:0,t:'',i:0,err:0,t0:0,done:0,iv:0,sp:[]};
+function loadPara(){
+  if(P.n>=P.order.length){P.order=shuf(PARAS);P.n=0}
+  Object.assign(P,{t:P.order[P.n],i:0,err:0,t0:0,done:0});clearInterval(P.iv);
+  txt.innerHTML=[...P.t].map(c=>`<span class="c u">${c===' '?'&nbsp;':c}</span>`).join('');
+  txt.append(hint);P.sp=txt.querySelectorAll('.c');P.sp[0].className='c cur';
+  $('pidx').textContent=`${P.n+1} / ${P.order.length}`;pStats();
+}
+function pNums(){
+  const el=P.t0?((P.end||Date.now())-P.t0)/1000:0;
+  return{el,wpm:P.i?Math.round(P.i/5/(Math.max(el,1)/60)):0,acc:P.i+P.err?Math.round(P.i/(P.i+P.err)*100):null};
+}
+function pStats(){
+  const s=pNums();$('sT').textContent=s.el.toFixed(1)+'s';$('sW').textContent=s.wpm;
+  $('sA').textContent=s.acc==null?'-':s.acc+'%';$('sE').textContent=P.err;
+  $('pbar').style.width=P.i/P.t.length*100+'%';
+}
+function pKey(k){
+  if(P.done)return;
+  if(!P.t0){P.t0=Date.now();P.end=0;P.iv=setInterval(pStats,100)}
+  if(anyKey||k===P.t[P.i]){
+    P.sp[P.i].className='c ok';P.i++;
+    if(P.i<P.t.length)P.sp[P.i].className='c cur';else return pDone();
+  }else{P.err++;txt.classList.remove('sh');void txt.offsetWidth;txt.classList.add('sh')}
+  pStats();
+}
+function pBack(){if(P.i>0&&!P.done){P.sp[P.i].className='c u';P.i--;P.sp[P.i].className='c cur';pStats()}}
+function pDone(){
+  P.done=1;P.end=Date.now();clearInterval(P.iv);pStats();
+  const s=pNums(),acc=s.acc??100;let sub,up=false;
+  if(anyKey){sub='Any-key mode is on, so this one does not count.'}
+  else{
+    S.done++;S.acc+=acc;S.wpm+=s.wpm;S.err+=P.err;S.time+=s.el;S.best=Math.max(S.best,s.wpm);S.hist=[...(S.hist||[]),{w:s.wpm,a:acc}].slice(-12);
+    up=addXP(10+s.wpm*acc/100);
+    sub=up?'Level up! You are now level '+lvOf()+' 🎉':rnd(s.wpm>=80?['Speed demon!','Flying fingers!']:s.wpm>=50?['Solid pace!','Smooth typing!']:['Keep it up!','Building momentum!']);
+  }
+  boom(up?80:36);
+  setTimeout(()=>modal(s.wpm>=80?'🚀':'🏁','Paragraph complete!',sub,[[s.wpm,'WPM','var(--pu)'],[acc+'%','Accuracy','var(--gr)'],[s.el.toFixed(1)+'s','Time','var(--tx)'],[P.err,'Mistakes','var(--rd)']],'Next paragraph',nextPara),250);
+}
+function nextPara(){P.n++;loadPara();focusIn()}
+$('bNx').onclick=nextPara;
+$('bRe').onclick=()=>{loadPara();focusIn()};
+txt.onclick=focusIn;
+
+/* ---------- progress page ---------- */
+function paintStats(){
+  const n=S.done,avg=v=>n?v/n:0,fmt=(v,d=0)=>n?v.toFixed(d):'-';
+  const card=(v,l,c)=>`<div class="st"><b style="color:${c}">${v}</b><span>${l}</span></div>`;
+  const tm=S.time>=3600?(S.time/3600).toFixed(1)+'h':S.time>=60?Math.round(S.time/60)+'m':Math.round(S.time)+'s';
+  $('pf').innerHTML=`<div class="st xp"><b>Level ${lvOf()}</b><span>${S.xp%100} / 100 XP to level ${lvOf()+1} · ${S.xp} XP total</span><div class="bar" style="margin:10px 0 0"><i style="width:${S.xp%100}%"></i></div></div>`+
+    card(fmt(avg(S.wpm)),'Average WPM','var(--pu)')+card(S.best,'Best WPM','var(--pk)')+
+    card(n?fmt(avg(S.acc))+'%':'-','Average accuracy','var(--gr)')+card(fmt(avg(S.err),1),'Mistakes per paragraph','var(--rd)')+
+    card(n?fmt(avg(S.time),1)+'s':'-','Average time per paragraph','var(--am)')+card(n,'Paragraphs finished','var(--tx)')+card(n?tm:'-','Total time typing','var(--tx)');
+  const h=S.hist||[],mx=Math.max(40,...h.map(x=>x.w));
+  $('hist').innerHTML=h.length?`<div class="lab" style="margin-bottom:14px">Your last ${h.length} paragraphs (WPM)</div><div style="display:flex;align-items:flex-end;gap:8px;height:120px">${h.map(x=>`<div title="${x.w} WPM, ${x.a}% accuracy" style="flex:1;text-align:center;font-size:12px;color:var(--tx2)">${x.w}<div style="height:${Math.max(6,x.w/mx*90)}px;margin-top:4px;border-radius:8px 8px 4px 4px;background:linear-gradient(var(--pu),var(--pu6))"></div></div>`).join('')}</div>`:'<div class="lab">Finish a paragraph on the Practice page and your stats will show up here.</div>';
+}
+let rs=0;
+$('bReset').onclick=()=>{
+  if(!rs){rs=1;$('bReset').textContent='Click again to erase everything';setTimeout(()=>{rs=0;$('bReset').textContent='Reset progress'},3000);return}
+  S={...D,hist:[]};save();paintLvl();paintStats();rs=0;$('bReset').textContent='Reset progress';
+};
+
+/* ---------- boot ---------- */
+paintLvl();loadPara();route();
+</script>
+</body>
+</html>
